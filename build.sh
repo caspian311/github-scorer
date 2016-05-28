@@ -9,9 +9,13 @@ echo 'build-images'
 docker build -t caspian311/github-scorer-db:1.0 db_server
 docker build -t caspian311/github-scorer-app:1.0 app_server
 
+echo 'create data directories'
+data_dir=$(mkdir -p data ; cd data &> /dev/null; echo pwd; cd - &> /dev/null)
+log_dir=$(mkdir -p log ; cd log &> /dev/null; echo pwd; cd - &> /dev/null)
+
 echo 'run-images'
-docker run -d -p 3306:3306 caspian311/github-scorer-db:1.0
-docker run -d -p 3000:3000 caspian311/github-scorer-app:1.0
+docker run -d -v $data_dir:/var/lib/mysql -p 3306:3306 caspian311/github-scorer-db:1.0
+docker run -d -v $log_dir:/usr/src/app/log -p 3000:3000 caspian311/github-scorer-app:1.0
 
 docker ps
 
