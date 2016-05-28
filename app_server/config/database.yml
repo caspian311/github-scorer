@@ -15,7 +15,11 @@ test:
   database: app_server_test
 
 production:
-  <<: *default
-  database: app_server_production
-  username: app_server
-  password: <%= ENV['APP_SERVER_DATABASE_PASSWORD'] %>
+  host: <%= ENV['DATABASE_HOST'] %>
+  database: <%= ENV['DATABASE_DATABASE'] %>
+  username: <%= ENV['DATABASE_USERNAME'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
+  adapter: mysql2
+  encoding: utf8
+  reconnect: true
+
