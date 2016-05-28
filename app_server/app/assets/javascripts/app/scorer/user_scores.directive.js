@@ -1,11 +1,10 @@
 (function() {
-  angular.module('scorer').directive('users', function() {
+  angular.module('scorer').directive('userScores', function() {
     return {
       restrict: 'E',
       templateUrl: 'scorer/users.html',
-      controller: 'UsersController',
+      controller: 'UserScoresController',
       replace: true,
-      scope: {},
       link: function(scope, element) {
       }
     };
