@@ -3,7 +3,5 @@
 
 
   function UserScoresController($scope) {
-    $scope.users = 'monkey';
   }
-
 })();

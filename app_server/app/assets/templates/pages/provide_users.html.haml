@@ -3,7 +3,7 @@
 
   %form
     %label{:for => 'user_name'} Username
-    %input{:id => 'user_name'}
-    %button{:id => 'add_user_name'} Add user
+    %input{:id => 'user_name', 'ng-model' => 'newUser'}
+    %button{:id => 'add_user_name', 'ng-click' => 'addUser()', 'ng-disabled' => 'disableAddUser()'} Add user
 
   %user-scores
