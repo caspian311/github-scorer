@@ -13,7 +13,7 @@
         $scope.users.push($scope.newUser);
       }
       $scope.newUser = '';
-      ScoreReport.query({ users: $scope.users }).then(function(data) {
+      ScoreReport.query({ 'users[]': $scope.users }).then(function(data) {
         $scope.scoreReport = data;
       }, function(error) {
         $scope.error = error.data;

@@ -1,22 +1,31 @@
 require 'rails_helper'
 
 describe 'ApiScoresController' do
-  let(:score_handler) { double 'score handler' }
+  let(:user1) { 'abc' }
+  let(:user2) { 'def' }
+
+  let(:user1_score_handler) { double 'score handler', handle: 5 }
+  let(:user2_score_handler) { double 'score handler', handle: 3 }
+
   before do
-      allow(GithubScoreHandler).to receive(:new) { score_handler }
-      allow(score_handler).to receive(:handle)
+      allow(GithubScoreHandler).to receive(:new).with(user1) { user1_score_handler }
+      allow(GithubScoreHandler).to receive(:new).with(user2) { user2_score_handler }
+
+      get api_scores_path(users: [user1, user2])
   end
 
   describe '#show' do
     it 'should give back a 200' do
-      get api_scores_path
       expect(response.status).to eq(200)
     end
 
     it 'should call the handler' do
-      expect(score_handler).to receive(:handle)
+      expect(user1_score_handler).to have_received(:handle)
+      expect(user2_score_handler).to have_received(:handle)
+    end
 
-      get api_scores_path
+    it 'should compile the results together' do
+      expect(user1_score_handler).to have_received(:handle)
     end
   end
 end
