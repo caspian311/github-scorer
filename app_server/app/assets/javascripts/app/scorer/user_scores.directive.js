@@ -2,8 +2,7 @@
   angular.module('scorer').directive('userScores', function() {
     return {
       restrict: 'E',
-      templateUrl: 'scorer/users.html',
-      controller: 'UserScoresController',
+      templateUrl: 'scorer/user_scores.html',
       replace: true,
       link: function(scope, element) {
       }
