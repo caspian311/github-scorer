@@ -1,5 +1,5 @@
 (function() {
-  var module = angular.module('scorer', ['templates', 'ngRoute']);
+  var module = angular.module('scorer', ['templates', 'ngRoute', 'rails']);
 
   module.config(['$routeProvider', moduleConfig]);
 

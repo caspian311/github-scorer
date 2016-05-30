@@ -1,8 +1,9 @@
 describe('ProvideUsersController', function() {
-  beforeEach(inject(function($controller) {
+  beforeEach(inject(function($controller, _$httpBackend_) {
     this.scope = {};
+    this.http = _$httpBackend_;
 
-    $controller('ProvideUsersController', { $scope: this.scope});
+    $controller('ProvideUsersController', { $scope: this.scope });
   }));
 
   describe('initially', function() {
@@ -25,6 +26,33 @@ describe('ProvideUsersController', function() {
       this.scope.addUser();
 
       expect(this.scope.newUser).toEqual('');
+    });
+    
+    it('fetches a report for the given users', function() {
+      var data = 'expected data';
+      this.http.whenGET(/\/api\/scores.*/).respond(200, data);
+      this.http.expectGET('/api/scores?users=first&users=second&users=third');
+
+      this.scope.users = ['first', 'second', 'third'];
+
+      this.scope.addUser();
+      this.http.flush();
+
+      expect(this.scope.scoreReport).toEqual(data);
+    });
+
+    it('shows an error if something went wrong', function() {
+      var errorMessage = 'expected error message';
+      this.http.whenGET(/\/api\/scores.*/).respond(400, errorMessage);
+      this.http.expectGET('/api/scores?users=somethingelse');
+
+      this.scope.users = ['somethingelse'];
+
+      this.scope.addUser();
+      this.http.flush();
+
+      expect(this.scope.scoreReport).toEqual(undefined);
+      expect(this.scope.error).toEqual(errorMessage);
     });
   });
 
