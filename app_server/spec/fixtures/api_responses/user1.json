@@ -1,0 +1,18 @@
+[
+  {
+    "id": "1",
+    "type": "PushEvent"
+  },
+  {
+    "id": "2",
+    "type": "CreateEvent"
+  },
+  {
+    "id": "3",
+    "type": "IssuesEvent"
+  },
+  {
+    "id": "4",
+    "type": "OtherEvent"
+  }
+]
