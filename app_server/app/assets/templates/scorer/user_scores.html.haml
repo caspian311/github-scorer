@@ -1,1 +1,10 @@
-%h3 Users: {{ users }}
+%div
+  %h3 Scores:
+  %table
+    %thead
+      %th Username
+      %th Score
+    %tbody
+      %tr{'ng-repeat' => 'userScore in scoreReport'}
+        %td {{ userScore.username }}
+        %td {{ userScore.score }}
