@@ -2,7 +2,7 @@
 
 echo 'stopping all docker containers'
 set +e
-docker stop $(docker ps | grep -v CONTAINER | awk '{print $1}')
+docker rm -f $(docker ps | grep -v CONTAINER | awk '{print $1}')
 set -e
 
 echo 'build-images'
@@ -20,9 +20,9 @@ app_log_dir=$(mkdir -p logging/app ; cd logging/app &> /dev/null; pwd; cd - &> /
 web_log_dir=$(mkdir -p logging/web ; cd logging/web &> /dev/null; pwd; cd - &> /dev/null)
 
 echo 'run-images'
-docker run -d -v $data_dir:/var/lib/mysql -v $db_log_dir:/var/log/mysql -p 3306:3306 caspian311/github-scorer-db:1.0
-docker run -d -v $app_log_dir:/usr/src/app/log -v $app_log_dir:/usr/src/app/log -p 3000:3000 caspian311/github-scorer-app:1.0
-docker run -d -v $web_log_dir:/var/log/nginx -p 80:80 caspian311/github-scorer-web:1.0
+docker run -d --name db_server -v $data_dir:/var/lib/mysql -v $db_log_dir:/var/log/mysql -p 3306:3306 caspian311/github-scorer-db:1.0
+docker run -d --name app_server --link db_server -v $app_log_dir:/usr/src/app/log -v $app_log_dir:/usr/src/app/log -p 3000:3000 caspian311/github-scorer-app:1.0 
+docker run -d --name web_server --link app_server -v $web_log_dir:/var/log/nginx -p 80:80 caspian311/github-scorer-web:1.0
 
 docker ps
 
