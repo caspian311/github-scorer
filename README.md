@@ -25,5 +25,13 @@ Sample output:
 
 #The Build#
 
+Ok. So I decided to play around with Docker on this. 
+
+So on MAC:
+
+    $ ssh docker-machine ssh default
+    $ cd <path-to-clone>
     $ ./build.sh
+
+Open browser to: *http://192.168.33.100*
 

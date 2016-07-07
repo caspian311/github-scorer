@@ -14,8 +14,17 @@ class GithubScoreHandler
   private
 
   def response
-    raw = RestClient.get "https://api.github.com/users/#{username}/events"
-    JSON.parse raw
+
+    response = CachedResponse.find_or_create_by(username: username).tap do |cached_response|
+      unless cached_response.response
+        cached_response.update response: raw_data
+      end
+    end.response
+    JSON.parse response
+  end
+
+  def raw_data
+    RestClient.get("https://api.github.com/users/#{username}/events")
   end
 
   def event_value(event)
