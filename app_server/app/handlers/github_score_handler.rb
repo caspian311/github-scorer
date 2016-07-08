@@ -24,17 +24,7 @@ class GithubScoreHandler
   end
 
   def trimmed_data
-    JSON.parse(raw_data).map do |event|
-      { type: event['type'] }
-    end.to_json
-  end
-
-  def raw_data
-    RestClient.get endpoint
-  end
-
-  def endpoint
-    "https://api.github.com/users/#{username}/events"
+    GithubDataProvider.new(username).event_data.to_json
   end
 
   def event_value(event)
@@ -50,3 +40,4 @@ class GithubScoreHandler
     end
   end
 end
+
