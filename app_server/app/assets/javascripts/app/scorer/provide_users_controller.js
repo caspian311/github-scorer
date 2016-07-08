@@ -14,6 +14,7 @@
       }
       $scope.newUser = '';
       ScoreReport.query({ 'users[]': $scope.users }).then(function(data) {
+        $scope.error = undefined;
         $scope.scoreReport = data;
       }, function(error) {
         $scope.error = error.data.error_message;

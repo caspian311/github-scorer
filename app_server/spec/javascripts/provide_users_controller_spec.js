@@ -13,30 +13,39 @@ describe('ProvideUsersController', function() {
   });
 
   describe('#addUser', function() {
-    it('adds the user to group of users to query', function() {
-      this.http.whenGET(/\/api\/scores.*/).respond(200, '');
-      this.http.expectGET(/\/api\/scores.*/);
-      this.scope.newUser = 'caspian311';
-      this.scope.addUser();
-      this.http.flush();
+    describe('when success', function() {
+      beforeEach(function() {
+        this.expectedData = 'expected data';
+        this.http.whenGET(/\/api\/scores.*/).respond(200, this.expectedData);
+        this.http.expectGET(/\/api\/scores.*/);
+        this.scope.newUser = 'caspian311';
+      });
 
-      expect(this.scope.users.length).toEqual(1);
-      expect(this.scope.users[0]).toEqual('caspian311');
+      it('adds the user to group of users to query', function() {
+        this.scope.addUser();
+        this.http.flush();
+
+        expect(this.scope.users.length).toEqual(1);
+        expect(this.scope.users[0]).toEqual('caspian311');
+      });
+
+      it('clears out the new user', function() {
+        this.scope.addUser();
+        this.http.flush();
+
+        expect(this.scope.newUser).toEqual('');
+      });
+      
+      it('populates the scoreReport based on data returned', function() {
+        this.scope.addUser();
+        this.http.flush();
+
+        expect(this.scope.scoreReport).toEqual(this.expectedData);
+      });
     });
 
-    it('clears out the new user', function() {
+    it('queries the backend with the correct users', function() {
       this.http.whenGET(/\/api\/scores.*/).respond(200, '');
-      this.http.expectGET(/\/api\/scores.*/);
-      this.scope.newUser = 'something';
-      this.scope.addUser();
-      this.http.flush();
-
-      expect(this.scope.newUser).toEqual('');
-    });
-    
-    it('fetches a report for the given users', function() {
-      var data = 'expected data';
-      this.http.whenGET(/\/api\/scores.*/).respond(200, data);
       this.http.expectGET('/api/scores?users%5B%5D=first&users%5B%5D=second&users%5B%5D=third');
 
       this.scope.users = ['first', 'second', 'third'];
@@ -44,21 +53,44 @@ describe('ProvideUsersController', function() {
       this.scope.addUser();
       this.http.flush();
 
-      expect(this.scope.scoreReport).toEqual(data);
+      expect(this.scope.scoreReport).not.toEqual(undefined)
     });
 
-    it('shows an error if something went wrong', function() {
-      var errorMessage = 'expected error message';
-      this.http.whenGET(/\/api\/scores.*/).respond(404, { 'error_message': errorMessage });
-      this.http.expectGET('/api/scores?users%5B%5D=somethingelse');
+    describe('something went wrong', function() {
+      beforeEach(function() {
+        this.errorMessage = 'expected error message';
+        this.http.whenGET(/\/api\/scores.*/).respond(404, { 'error_message': this.errorMessage });
+        this.http.expectGET('/api/scores?users%5B%5D=somethingelse');
+      });
 
-      this.scope.users = ['somethingelse'];
+      it('shows an error', function() {
+        this.scope.users = ['somethingelse'];
 
-      this.scope.addUser();
-      this.http.flush();
+        this.scope.addUser();
+        this.http.flush();
 
-      expect(this.scope.scoreReport).toEqual(undefined);
-      expect(this.scope.error).toEqual(errorMessage);
+        expect(this.scope.scoreReport).toEqual(undefined);
+        expect(this.scope.error).toEqual(this.errorMessage);
+      });
+    });
+
+    describe('previous run failed', function() {
+      beforeEach(function() {
+        this.scope.error = 'something bad';
+      });
+
+      it('hide error', function() {
+        var data = 'expected data';
+        this.http.whenGET(/\/api\/scores.*/).respond(200, data);
+        this.http.expectGET('/api/scores?users%5B%5D=foo');
+
+        this.scope.users = ['foo'];
+
+        this.scope.addUser();
+        this.http.flush();
+
+        expect(this.scope.error).toEqual(undefined);
+      });
     });
   });
 
