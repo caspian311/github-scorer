@@ -49,7 +49,7 @@ describe('ProvideUsersController', function() {
 
     it('shows an error if something went wrong', function() {
       var errorMessage = 'expected error message';
-      this.http.whenGET(/\/api\/scores.*/).respond(400, errorMessage);
+      this.http.whenGET(/\/api\/scores.*/).respond(404, { 'error_message': errorMessage });
       this.http.expectGET('/api/scores?users%5B%5D=somethingelse');
 
       this.scope.users = ['somethingelse'];

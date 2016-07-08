@@ -16,7 +16,7 @@
       ScoreReport.query({ 'users[]': $scope.users }).then(function(data) {
         $scope.scoreReport = data;
       }, function(error) {
-        $scope.error = error.data;
+        $scope.error = error.data.error_message;
       });
     }
   }
