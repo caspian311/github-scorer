@@ -6,25 +6,35 @@ class GithubScoreHandler
   end
 
   def handle
-    response.inject(0) do |sum, event|
+    user_data.inject(0) do |sum, event|
       sum + event_value(event)
     end
   end
 
   private
 
-  def response
-
-    response = CachedResponse.find_or_create_by(username: username).tap do |cached_response|
-      unless cached_response.response
-        cached_response.update response: raw_data
-      end
-    end.response
+  def user_data
     JSON.parse response
   end
 
+  def response
+    CachedResponse.find_or_create_by(username: username) do |cached_response|
+      cached_response.update response: trimmed_data
+    end.response
+  end
+
+  def trimmed_data
+    JSON.parse(raw_data).map do |event|
+      { type: event['type'] }
+    end.to_json
+  end
+
   def raw_data
-    RestClient.get("https://api.github.com/users/#{username}/events")
+    RestClient.get endpoint
+  end
+
+  def endpoint
+    "https://api.github.com/users/#{username}/events"
   end
 
   def event_value(event)

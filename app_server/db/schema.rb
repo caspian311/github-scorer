@@ -15,7 +15,7 @@ ActiveRecord::Schema.define(version: 20160707121958) do
 
   create_table "cached_responses", force: :cascade do |t|
     t.string "username", limit: 255
-    t.string "response", limit: 255
+    t.text   "response", limit: 65535
   end
 
 end

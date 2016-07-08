@@ -2,7 +2,7 @@
 
 echo 'stopping all docker containers'
 set +e
-docker rm -f $(docker ps | grep -v CONTAINER | awk '{print $1}')
+docker rm -f $(docker ps -a | grep -v CONTAINER | awk '{print $1}')
 set -e
 
 echo 'build-images'
