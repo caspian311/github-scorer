@@ -18,6 +18,7 @@
         $scope.scoreReport = data;
       }, function(error) {
         $scope.error = error.data.error_message;
+        $scope.users.pop();
       });
     }
   }

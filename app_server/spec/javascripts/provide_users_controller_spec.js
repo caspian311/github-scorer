@@ -69,8 +69,25 @@ describe('ProvideUsersController', function() {
         this.scope.addUser();
         this.http.flush();
 
-        expect(this.scope.scoreReport).toEqual(undefined);
         expect(this.scope.error).toEqual(this.errorMessage);
+      });
+
+      it('do not populate scoreReport', function() {
+        this.scope.users = ['somethingelse'];
+
+        this.scope.addUser();
+        this.http.flush();
+
+        expect(this.scope.scoreReport).toEqual(undefined);
+      });
+
+      it('removes the user from the list going back to the server', function() {
+        this.scope.users = ['somethingelse'];
+
+        this.scope.addUser();
+        this.http.flush();
+
+        expect(this.scope.users).toEqual([]);
       });
     });
 
